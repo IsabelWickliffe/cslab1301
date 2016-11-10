@@ -1,5 +1,8 @@
 // Isabel Wickliffe: I worked on this assignment alone using only this semester's course materials
 
+
+// http://cs1301.com/downloads/Lab3/
+
 kiwi_caught = 0;
 
 function process_frame() {
@@ -15,8 +18,6 @@ function process_frame() {
   compute_truck_position();
   if (Math.round(100*Math.random()) < kiwi_rate) {
     create_kiwi();
-    console.log(get_kiwi_x());
-
   }
   // for each frame we want to use the random function and the user probability to decide whether to drop a kiwi
 }
@@ -71,31 +72,51 @@ function brake_truck() {
 }
 
 function compute_truck_position() {
-  leftDis = get_truck_left();
-  rightDis = window.innerWidth - leftDis;
+  truckLeft = get_truck_left();
+  truckRight = get_truck_left() + 250;
+  console.log("Truck Left: " + truckLeft + "Truck Right: " + truckRight);
+  leftBound = 0;
+  rightBound = window.innerWidth;
+  console.log("Width: " + rightBound);
   velocity = get_truck_velocity();
   // current position plus velocity
-  newPos = leftDis + velocity;  // time is already defined by frame buffer
-  set_truck_left(newPos);
-  // add boundaries
+  if (truckLeft <= leftBound) {
+    set_truck_left(10);
+    set_truck_velocity(5);
+  } else if (truckRight >= rightBound) {
+    set_truck_left(rightBound - 10);
+    set_truck_velocity(-5);
+  } else {
+    newPos = truckLeft + velocity;  // time is already defined by frame buffer
+    set_truck_left(newPos);
+  }
 }
 
 function find_collisions(kiwi) {
-  // get the coordinates for truck bed
-  // get the coordinates the kiwis???
-      // do i do all kiwis (array)
-  // see if the kiwi coordinates are within the truck coordinates (bounds???)
-      // what about entering from the side?
-  // if they are the same, add 1 to kiwi count
+  minX = get_truck_left();
+  maxX = get_truck_left() + 125;
+  minY = window.innerHeight;
+  //console.log("Inner Height: " + minY);
+  maxY = window.innerHeight - 50;
 
+  // I am choosing within an area because it is easier to have bounds that are a range for a collision to occur.
 
-  // upon kiwi spawn, begin find collisions for that kiwi (x, y blah blah)
-  get_kiwi_x(kiwi);
+  kiwiX = get_kiwi_x(kiwi);
+  //console.log("Kiwi X: " + kiwiX);
+  kiwiY = get_kiwi_y(kiwi);
+  //console.log("Kiwi Y: " + kiwiY);
+
+if (kiwiX > minX && kiwiX < maxX && kiwiY < minY && kiwiY > maxY) {
+  kiwi_caught++;
+  document.getElementById("kiwi-count").innerHTML = kiwi_caught;
+  delete_kiwi(kiwi);
+}
 }
 
 function game_over() {
-	// your code here
+	alert("Game Over!", "You caught " + kiwi_caught + " kiwis!", "Click here to start again!");
+  document.getElementById("kiwi-count").innerHTML = 0;
+  kiwi_caught = 0;
 }
-
 // just ignore this (‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌but don't delete it‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌):
 check_latest = 2;
